@@ -39,7 +39,31 @@ const reducer = (state, action) => {
     case 'RESET_FORM':
       return { ...state, form: initialState.form };
     case 'SET_INPUT':
-      return { ...state, form: { ...state.form, [action.name]: action.value } }
+      return { ...state, form: { ...state.form, [action.name]: action.value } };
+    case 'UPDATE_NOTE':
+      const updatedNoteIndex = state.notes.findIndex(n => n.id === action.note.id);
+      const notes = [...state.notes]
+        if (updatedNoteIndex !== -1) { 
+            notes[updatedNoteIndex] = action.note;
+        };
+      return{...state, notes: notes};
+    case 'SORT_NOTES':
+      let newSort, sorted
+        if (state.sortedNote === 'AZ') {
+          newSort = 'ZA';
+          sorted = state.notes.sort((a, b) => (a.name > b.name ? 1 : -1));
+        } else {
+          newSort = 'AZ';
+          sorted = state.notes.sort((a, b) => (a.name < b.name ? 1 : -1));
+        }
+      return {...state, notes: sorted, sortedNote: newSort };
+    case 'REMOVE_NOTE':
+        const index = state.notes.findIndex(n=> n.id === action.id)
+        const removeNotes = [
+          ...state.notes.slice(0, index), 
+          ...state.notes.slice(index + 1)
+        ];
+        return { ...state, notes: removeNotes };
     case 'ERROR':
         return { ...state, loading: false, error: true };
       default:
